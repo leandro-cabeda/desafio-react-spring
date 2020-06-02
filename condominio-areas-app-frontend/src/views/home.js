@@ -1,8 +1,7 @@
 import React from 'react';
 
-class Home extends React.Component{
+const Home=props=>{
 
-    render(){
         return (
             <div className="jumbotron offset-2 w-75">
                 <h1 className="display-3">Bem vindo!</h1>
@@ -23,7 +22,6 @@ class Home extends React.Component{
                 </p>
             </div>
         )
-    }
 }
 
 export default Home;

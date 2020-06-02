@@ -11,9 +11,8 @@ import 'primereact/resources/themes/nova-light/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
-class App extends React.Component {
+const App=props=> {
 
-  render(){
     return(
       <div>
         <Navbar />
@@ -22,7 +21,6 @@ class App extends React.Component {
         </div>
       </div>
     )
-  }
 }
 
 export default App;

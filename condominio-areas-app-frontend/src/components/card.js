@@ -1,17 +1,15 @@
 import React from 'react';
 
-class Card extends React.Component{
+const Card=props=>{
 
-    render(){
         return(
             <div className="card col-4 offset-4 p-0">
-                <h3 className="card-header text-center">{this.props.title}</h3>
+                <h3 className="card-header text-center">{props.title}</h3>
                 <div className="card-body">
-                    {this.props.children}
+                    {props.children}
                 </div>
             </div>
         )
-    }
 }
 
 export default Card;
