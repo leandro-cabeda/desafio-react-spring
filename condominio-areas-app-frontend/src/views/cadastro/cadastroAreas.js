@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 
 import { withRouter } from 'react-router-dom';
 import Card from '../../components/card';
@@ -6,32 +6,26 @@ import FormGroup from '../../components/form-group';
 import AreasService from '../../app/service/AreasService';
 import * as messages from '../../components/toastr';
 
-class CadastroAreas extends React.Component{
+const CadastroAreas=props=>{
 
-    state = {
-        descricao : ''
-    }
+    let [descricao,setDescricao]=useState("");
 
-    constructor(){
-        super();
-        this.service = new AreasService();
-    }
+    const service = new AreasService();
 
-    cadastrar = () => {
-
-        const {descricao } = this.state;        
-        const area = {descricao };
-        const validacaoMSG = this.service.validar(area);
+    const cadastrar = () => {
+        
+        const area = descricao;
+        const validacaoMSG = service.validar(area);
 
         if(validacaoMSG!=null){
             messages.mensagemErro(validacaoMSG);
             return false;
         }
 
-        this.service.salvar(area)
+        service.salvar(area)
             .then( response => {
                 messages.mensagemSucesso('Área cadastrado com sucesso!');
-                this.props.history.push('/lista-areas');
+                props.history.push('/lista-areas');
             }).catch(error => {
 
                 const err={
@@ -43,11 +37,10 @@ class CadastroAreas extends React.Component{
             });
     }
 
-    cancelar = () => {
-        this.props.history.push('/home');
+   const cancelar = () => {
+        props.history.push('/home');
     }
 
-    render(){
         return (
             <Card title="Cadastro de Áreas">
                 <div className="row">
@@ -58,13 +51,13 @@ class CadastroAreas extends React.Component{
                                        id="descricao" 
                                        className="form-control text-center text-primary"
                                        name="descricao"
-                                       onChange={e => this.setState({descricao: e.target.value})} />
+                                       onChange={e => setDescricao({descricao: e.target.value})} />
                             </FormGroup>
                             <div className="text-center">
-                                <button onClick={this.cadastrar} type="button" className="btn btn-success">
+                                <button onClick={cadastrar} type="button" className="btn btn-success">
                                     <i className="pi pi-save"></i> Salvar
                                 </button>
-                                <button onClick={this.cancelar} type="button" className="btn btn-danger">
+                                <button onClick={cancelar} type="button" className="btn btn-danger">
                                     <i className="pi pi-times"></i> Cancelar
                                 </button>
                             </div>
@@ -73,7 +66,7 @@ class CadastroAreas extends React.Component{
                 </div>
             </Card>
         )
-    }
 }
+
 
 export default withRouter(CadastroAreas);

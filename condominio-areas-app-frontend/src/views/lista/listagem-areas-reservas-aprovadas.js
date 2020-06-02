@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import * as messages from '../../components/toastr';
 import { withRouter } from 'react-router-dom';
 import AreasService from '../../app/service/AreasService';
 import CardListagem from '../../components/card-listagem';
 
-const ListagemTable=props=>{
+const ListagemTable=({...props})=>{
 
     const rows = props.reservas.map( reserva=> {
         return (
@@ -34,49 +34,36 @@ const ListagemTable=props=>{
 }
 
 
-class AreasReservasAprovadas extends React.Component {
+const AreasReservasAprovadas=props=> {
 
-    state = {
-        listaReservas : []
-    }
+    let [listaReservas,setListaAreas]=useState([]);
 
-    constructor(){
-        super();
-        this.service = new AreasService();
-    }
+    const service = new AreasService();
 
-    componentDidMount=()=> this.carregarLista();
-
-    carregarLista=()=>{
-        this.service.listarReservasAprovadas()
+        service.listarReservasAprovadas()
             .then( resposta => {
                 const lista = resposta.data;
                 
                 if(lista.length < 1){
                     messages.mensagemAlert("Nenhum resultado encontrado.");
                 }
-                this.setState({ listaReservas: lista });
+                setListaAreas(listaReservas= lista);
             }).catch( error => {
                 messages.mensagemErro(error);
             });
-    }
-
-    render(){
 
         return (
             <CardListagem title="Listagem de Reservas Aprovadas">
                 <div className="row">
                     <div className="col-12">
                         <div className="bs-component">
-                            <ListagemTable reservas={this.state.listaReservas}/>
+                            <ListagemTable reservas={listaReservas}/>
                         </div>
                     </div>  
                 </div>           
             </CardListagem>
 
         )
-    }
-
 }
 
 export default withRouter(AreasReservasAprovadas);

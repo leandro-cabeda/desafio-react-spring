@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import * as messages from '../../components/toastr';
 import { withRouter } from 'react-router-dom';
 import AreasService from '../../app/service/AreasService';
 import CardListagem from '../../components/card-listagem';
 
-const ListagemTable=props=>{
+const ListagemTable=({...props})=>{
 
     const rows = props.areas.map( area=> {
         return (
@@ -53,52 +53,43 @@ const ListagemTable=props=>{
 }
 
 
-class Areas extends React.Component {
+const Areas=props=>{
 
-    state = {
-        listaAreas : []
-    }
+    let [listaAreas,setListaAreas]=useState([]);
 
-    constructor(){
-        super();
-        this.service = new AreasService();
-    }
+    const service = new AreasService();
 
-    componentDidMount=()=> this.carregarLista();
-
-    carregarLista=()=>{
-        this.service.listar()
-            .then( resposta => {
-                const lista = resposta.data;
+    
+    service.listar()
+        .then( resposta => {
+            const lista = resposta.data;
                 
-                if(lista.length < 1){
-                    messages.mensagemAlert("Nenhum resultado encontrado.");
-                }
-                this.setState({ listaAreas: lista });
-            }).catch( error => {
+        if(lista.length < 1){
+            messages.mensagemAlert("Nenhum resultado encontrado.");
+        }
+        setListaAreas(listaAreas=lista );
+        }).catch( error => {
                 messages.mensagemErro(error);
-            });
+        });
+    
+
+    const preparaFormularioCadastro = () => {
+        props.history.push('/cadastro-areas');
     }
 
-    preparaFormularioCadastro = () => {
-        this.props.history.push('/cadastro-areas');
-    }
-
-    alterarStatus = (area, status) => {
-        this.service
+    const alterarStatus = (area, status) => {
+        service
             .alterarStatus(area.id, status)
             .then(() => {
-                this.carregarLista();
                 messages.mensagemSucesso("Status atualizado com sucesso!")
             });
     }
-    render(){
 
         return (
             <CardListagem title="Listagem de Áreas">
                 <div className="row">
                     <div className="col-12 text-center">
-                        <button onClick={this.preparaFormularioCadastro} 
+                        <button onClick={preparaFormularioCadastro} 
                             type="button" 
                             className="btn btn-success">
                             <i className="pi pi-plus"></i>Cadastrar Áreas
@@ -106,16 +97,14 @@ class Areas extends React.Component {
                     </div>
                     <div className="col-12">
                         <div className="bs-component">
-                            <ListagemTable areas={this.state.listaAreas}
-                                              alterarStatus={this.alterarStatus} />
+                            <ListagemTable areas={listaAreas}
+                                              alterarStatus={alterarStatus} />
                         </div>
                     </div>  
                 </div>           
             </CardListagem>
 
         )
-    }
-
 }
 
 export default withRouter(Areas);
